@@ -2,6 +2,7 @@ package org.example.mangalistspringboot.domain.entities;
 
 import jakarta.persistence.*;
 import org.example.mangalistspringboot.api.dto.responses.ListMangasResponse;
+import org.springframework.data.annotation.CreatedDate;
 
 import java.time.Instant;
 import java.util.UUID;
@@ -15,18 +16,20 @@ public class Manga {
   @Column(nullable = false, unique = true)
   private String name;
   @Column(nullable = false)
-  private double currentChapter;
-  @Column
-  private double finalChapter;
+  private Double currentChapter;
+  @Column()
+  private Double finalChapter;
   @Column()
   private MangaStatus status = MangaStatus.PUBLISHING;
   @Column
-  private double englishChapter;
+  private Double englishChapter;
   @Column
-  private double portugueseChapter;
+  private Double portugueseChapter;
   @Column
   private String extraInfo;
-  @Column(name = "created_at", nullable = false)
+  @Column
+  private String alternativeName;
+  @CreatedDate()
   private Instant createdAt;
 
   public Manga(
@@ -38,6 +41,7 @@ public class Manga {
       final double englishChapter,
       final double portugueseChapter,
       final String extraInfo,
+      final String alternativeName,
       final Instant createdAt
   ) {
     this.id = id;
@@ -48,6 +52,7 @@ public class Manga {
     this.englishChapter = englishChapter;
     this.portugueseChapter = portugueseChapter;
     this.extraInfo = extraInfo;
+    this.alternativeName = alternativeName;
     this.createdAt = createdAt;
   }
 
@@ -70,19 +75,19 @@ public class Manga {
     this.name = name;
   }
 
-  public double getCurrentChapter() {
+  public Double getCurrentChapter() {
     return currentChapter;
   }
 
-  public void setCurrentChapter(final double currentChapter) {
+  public void setCurrentChapter(final Double currentChapter) {
     this.currentChapter = currentChapter;
   }
 
-  public double getFinalChapter() {
+  public Double getFinalChapter() {
     return finalChapter;
   }
 
-  public void setFinalChapter(final double finalChapter) {
+  public void setFinalChapter(final Double finalChapter) {
     this.finalChapter = finalChapter;
   }
 
@@ -94,11 +99,11 @@ public class Manga {
     this.status = status;
   }
 
-  public double getEnglishChapter() {
+  public Double getEnglishChapter() {
     return englishChapter;
   }
 
-  public void setEnglishChapter(final double englishChapter) {
+  public void setEnglishChapter(final Double englishChapter) {
     this.englishChapter = englishChapter;
   }
 
@@ -106,7 +111,7 @@ public class Manga {
     return portugueseChapter;
   }
 
-  public void setPortugueseChapter(final double portugueseChapter) {
+  public void setPortugueseChapter(final Double portugueseChapter) {
     this.portugueseChapter = portugueseChapter;
   }
 
@@ -116,6 +121,14 @@ public class Manga {
 
   public void setExtraInfo(final String extraInfo) {
     this.extraInfo = extraInfo;
+  }
+
+  public String getAlternativeName() {
+    return alternativeName;
+  }
+
+  public void setAlternativeName(final String alternativeName) {
+    this.alternativeName = alternativeName;
   }
 
   public Instant getCreatedAt() {
@@ -136,6 +149,7 @@ public class Manga {
         this.englishChapter,
         this.portugueseChapter,
         this.extraInfo,
+        this.alternativeName,
         this.createdAt
     );
   }
