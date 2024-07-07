@@ -6,7 +6,7 @@ import org.example.mangalistspringboot.domain.entities.MangaStatus;
 import java.time.Instant;
 import java.util.UUID;
 
-public record ListMangasResponse(
+public record MangaResponse(
     @JsonProperty("id") UUID id,
     @JsonProperty("name") String name,
     @JsonProperty("currentChapter") Double currentChapter,

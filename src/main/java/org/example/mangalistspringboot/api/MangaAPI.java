@@ -5,7 +5,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.example.mangalistspringboot.api.dto.requests.CreateMangaRequest;
-import org.example.mangalistspringboot.api.dto.responses.ListMangasResponse;
+import org.example.mangalistspringboot.api.dto.responses.MangaResponse;
 import org.example.mangalistspringboot.domain.helpers.Pagination;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,7 +19,7 @@ public interface MangaAPI {
       @ApiResponse(responseCode = "422", description = "A invalid parameter was received"),
       @ApiResponse(responseCode = "500", description = "An internal server error was thrown")
   })
-  Pagination<ListMangasResponse> list(
+  Pagination<MangaResponse> list(
       @RequestParam(name = "search", required = false, defaultValue = "") final String search,
       @RequestParam(name = "page", defaultValue = "0") int page,
       @RequestParam(name = "perPage", required = false, defaultValue = "10") final int perPage,
@@ -35,4 +35,13 @@ public interface MangaAPI {
       @ApiResponse(responseCode = "500", description = "An internal server error was thrown")
   })
   void add(@RequestBody final CreateMangaRequest request);
+
+  @GetMapping(path = "/{mangaId}")
+  @Operation(summary = "Get one manga")
+  @ApiResponses(value = {
+      @ApiResponse(responseCode = "200", description = "Fetched successfully"),
+      @ApiResponse(responseCode = "404", description = "Not found"),
+      @ApiResponse(responseCode = "500", description = "An internal server error was thrown")
+  })
+  MangaResponse findOne(@PathVariable("mangaId") String id);
 }

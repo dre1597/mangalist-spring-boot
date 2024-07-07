@@ -1,7 +1,7 @@
 package org.example.mangalistspringboot.domain.entities;
 
 import jakarta.persistence.*;
-import org.example.mangalistspringboot.api.dto.responses.ListMangasResponse;
+import org.example.mangalistspringboot.api.dto.responses.MangaResponse;
 
 import java.time.Instant;
 import java.util.UUID;
@@ -158,8 +158,8 @@ public class Manga {
     this.createdAt = createdAt;
   }
 
-  public ListMangasResponse toResponse() {
-    return new ListMangasResponse(
+  public MangaResponse toResponse() {
+    return new MangaResponse(
         this.id,
         this.name,
         this.currentChapter,

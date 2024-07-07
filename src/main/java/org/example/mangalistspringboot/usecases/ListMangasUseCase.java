@@ -1,6 +1,6 @@
 package org.example.mangalistspringboot.usecases;
 
-import org.example.mangalistspringboot.api.dto.responses.ListMangasResponse;
+import org.example.mangalistspringboot.api.dto.responses.MangaResponse;
 import org.example.mangalistspringboot.domain.entities.Manga;
 import org.example.mangalistspringboot.domain.helpers.Pagination;
 import org.example.mangalistspringboot.domain.helpers.SearchQuery;
@@ -26,7 +26,7 @@ public class ListMangasUseCase {
     this.mangaRepository = Objects.requireNonNull(mangaRepository);
   }
 
-  public Pagination<ListMangasResponse> execute(SearchQuery searchQuery) {
+  public Pagination<MangaResponse> execute(SearchQuery searchQuery) {
     final var page = PageRequest.of(
         searchQuery.page(),
         searchQuery.perPage(),
