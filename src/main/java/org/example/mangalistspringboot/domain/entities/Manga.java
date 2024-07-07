@@ -2,7 +2,6 @@ package org.example.mangalistspringboot.domain.entities;
 
 import jakarta.persistence.*;
 import org.example.mangalistspringboot.api.dto.responses.ListMangasResponse;
-import org.springframework.data.annotation.CreatedDate;
 
 import java.time.Instant;
 import java.util.UUID;
@@ -17,9 +16,9 @@ public class Manga {
   private String name;
   @Column(nullable = false)
   private Double currentChapter;
-  @Column()
+  @Column
   private Double finalChapter;
-  @Column()
+  @Column
   private MangaStatus status = MangaStatus.PUBLISHING;
   @Column
   private Double englishChapter;
@@ -29,17 +28,17 @@ public class Manga {
   private String extraInfo;
   @Column
   private String alternativeName;
-  @CreatedDate()
-  private Instant createdAt;
+  @Column
+  private Instant createdAt = Instant.now();
 
   public Manga(
       final UUID id,
       final String name,
-      final double currentChapter,
-      final double finalChapter,
+      final Double currentChapter,
+      final Double finalChapter,
       final MangaStatus status,
-      final double englishChapter,
-      final double portugueseChapter,
+      final Double englishChapter,
+      final Double portugueseChapter,
       final String extraInfo,
       final String alternativeName,
       final Instant createdAt
@@ -54,6 +53,26 @@ public class Manga {
     this.extraInfo = extraInfo;
     this.alternativeName = alternativeName;
     this.createdAt = createdAt;
+  }
+
+  public Manga(
+      final String name,
+      final Double currentChapter,
+      final Double finalChapter,
+      final MangaStatus status,
+      final Double englishChapter,
+      final Double portugueseChapter,
+      final String extraInfo,
+      final String alternativeName
+  ) {
+    this.name = name;
+    this.currentChapter = currentChapter;
+    this.finalChapter = finalChapter;
+    this.status = status;
+    this.englishChapter = englishChapter;
+    this.portugueseChapter = portugueseChapter;
+    this.extraInfo = extraInfo;
+    this.alternativeName = alternativeName;
   }
 
   public Manga() {
