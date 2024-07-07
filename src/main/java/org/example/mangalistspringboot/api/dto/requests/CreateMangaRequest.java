@@ -7,10 +7,12 @@ import jakarta.validation.constraints.PositiveOrZero;
 import org.example.mangalistspringboot.domain.entities.Manga;
 import org.example.mangalistspringboot.domain.entities.MangaStatus;
 
+// TODO: create an entity and move validation to it
+
 public record CreateMangaRequest(
     @JsonProperty("name") @NotNull @NotBlank String name,
-    @JsonProperty("currentChapter") @NotNull Double currentChapter,
-    @JsonProperty("finalChapter") Double finalChapter,
+    @JsonProperty("currentChapter") @NotNull @PositiveOrZero Double currentChapter,
+    @JsonProperty("finalChapter") @PositiveOrZero Double finalChapter,
     @JsonProperty("status") MangaStatus status,
     @JsonProperty("englishChapter") @PositiveOrZero Double englishChapter,
     @JsonProperty("portugueseChapter") @PositiveOrZero Double portugueseChapter,

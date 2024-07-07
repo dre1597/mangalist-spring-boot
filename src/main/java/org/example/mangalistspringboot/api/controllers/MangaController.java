@@ -1,14 +1,15 @@
 package org.example.mangalistspringboot.api.controllers;
 
-import jakarta.validation.Valid;
 import org.example.mangalistspringboot.api.MangaAPI;
 import org.example.mangalistspringboot.api.dto.requests.CreateMangaRequest;
+import org.example.mangalistspringboot.api.dto.requests.UpdateMangaRequest;
 import org.example.mangalistspringboot.api.dto.responses.MangaResponse;
 import org.example.mangalistspringboot.domain.helpers.Pagination;
 import org.example.mangalistspringboot.domain.helpers.SearchQuery;
 import org.example.mangalistspringboot.usecases.CreateMangaUseCase;
 import org.example.mangalistspringboot.usecases.GetOneMangaUseCase;
 import org.example.mangalistspringboot.usecases.ListMangasUseCase;
+import org.example.mangalistspringboot.usecases.UpdateMangaUseCase;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.UUID;
@@ -18,15 +19,18 @@ public class MangaController implements MangaAPI {
   private final ListMangasUseCase listMangasUseCase;
   private final CreateMangaUseCase createMangaUseCase;
   private final GetOneMangaUseCase getOneMangaUseCase;
+  private final UpdateMangaUseCase updateMangaUseCase;
 
   public MangaController(
       final ListMangasUseCase listMangasUseCase,
       final CreateMangaUseCase createMangaUseCase,
-      final GetOneMangaUseCase getOneMangaUseCase
+      final GetOneMangaUseCase getOneMangaUseCase,
+      final UpdateMangaUseCase updateMangaUseCase
   ) {
     this.listMangasUseCase = listMangasUseCase;
     this.createMangaUseCase = createMangaUseCase;
     this.getOneMangaUseCase = getOneMangaUseCase;
+    this.updateMangaUseCase = updateMangaUseCase;
   }
 
   @Override
@@ -41,12 +45,17 @@ public class MangaController implements MangaAPI {
   }
 
   @Override
-  public void add(@Valid final CreateMangaRequest request) {
+  public void add(final CreateMangaRequest request) {
     this.createMangaUseCase.execute(request);
   }
 
   @Override
   public MangaResponse findOne(final String id) {
     return this.getOneMangaUseCase.execute(UUID.fromString(id));
+  }
+
+  @Override
+  public void update(final String id, final UpdateMangaRequest request) {
+    this.updateMangaUseCase.execute(UUID.fromString(id), request);
   }
 }

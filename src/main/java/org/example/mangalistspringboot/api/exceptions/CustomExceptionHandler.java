@@ -2,6 +2,7 @@ package org.example.mangalistspringboot.api.exceptions;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -23,5 +24,16 @@ public class CustomExceptionHandler {
     responseBody.put("statusCode", 422);
 
     return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(responseBody);
+  }
+
+  @ExceptionHandler(HttpMessageNotReadableException.class)
+  public ResponseEntity<Map<String, Object>> handleHttpMessageNotReadableException(final HttpMessageNotReadableException exception) {
+    var responseBody = new HashMap<String, Object>();
+    responseBody.put("message", "Invalid request body. Please check the input values.");
+    responseBody.put("statusCode", 400);
+
+    responseBody.put("details", exception.getMessage());
+
+    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseBody);
   }
 }
