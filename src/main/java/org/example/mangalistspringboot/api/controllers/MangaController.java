@@ -6,10 +6,7 @@ import org.example.mangalistspringboot.api.dto.requests.UpdateMangaRequest;
 import org.example.mangalistspringboot.api.dto.responses.MangaResponse;
 import org.example.mangalistspringboot.domain.helpers.Pagination;
 import org.example.mangalistspringboot.domain.helpers.SearchQuery;
-import org.example.mangalistspringboot.usecases.CreateMangaUseCase;
-import org.example.mangalistspringboot.usecases.GetOneMangaUseCase;
-import org.example.mangalistspringboot.usecases.ListMangasUseCase;
-import org.example.mangalistspringboot.usecases.UpdateMangaUseCase;
+import org.example.mangalistspringboot.usecases.*;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.UUID;
@@ -20,17 +17,20 @@ public class MangaController implements MangaAPI {
   private final CreateMangaUseCase createMangaUseCase;
   private final GetOneMangaUseCase getOneMangaUseCase;
   private final UpdateMangaUseCase updateMangaUseCase;
+  private final DeleteMangaUseCase deleteMangaUseCase;
 
   public MangaController(
       final ListMangasUseCase listMangasUseCase,
       final CreateMangaUseCase createMangaUseCase,
       final GetOneMangaUseCase getOneMangaUseCase,
-      final UpdateMangaUseCase updateMangaUseCase
+      final UpdateMangaUseCase updateMangaUseCase,
+      final DeleteMangaUseCase deleteMangaUseCase
   ) {
     this.listMangasUseCase = listMangasUseCase;
     this.createMangaUseCase = createMangaUseCase;
     this.getOneMangaUseCase = getOneMangaUseCase;
     this.updateMangaUseCase = updateMangaUseCase;
+    this.deleteMangaUseCase = deleteMangaUseCase;
   }
 
   @Override
@@ -57,5 +57,10 @@ public class MangaController implements MangaAPI {
   @Override
   public void update(final String id, final UpdateMangaRequest request) {
     this.updateMangaUseCase.execute(UUID.fromString(id), request);
+  }
+
+  @Override
+  public void delete(final String id) {
+    this.deleteMangaUseCase.execute(UUID.fromString(id));
   }
 }

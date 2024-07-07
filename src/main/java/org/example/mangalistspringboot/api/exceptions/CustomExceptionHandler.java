@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.NoSuchElementException;
 
 @RestControllerAdvice
 public class CustomExceptionHandler {
@@ -35,5 +36,23 @@ public class CustomExceptionHandler {
     responseBody.put("details", exception.getMessage());
 
     return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseBody);
+  }
+
+  @ExceptionHandler(IllegalArgumentException.class)
+  public ResponseEntity<Map<String, Object>> handleIllegalArgumentException(final IllegalArgumentException exception) {
+    var responseBody = new HashMap<String, Object>();
+    responseBody.put("message", exception.getMessage());
+    responseBody.put("statusCode", 400);
+
+    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseBody);
+  }
+
+  @ExceptionHandler(NoSuchElementException.class)
+  public ResponseEntity<Map<String, Object>> handleNoSuchElementException(final NoSuchElementException exception) {
+    var responseBody = new HashMap<String, Object>();
+    responseBody.put("message", exception.getMessage());
+    responseBody.put("statusCode", 404);
+
+    return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseBody);
   }
 }

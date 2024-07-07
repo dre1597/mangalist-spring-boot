@@ -56,4 +56,13 @@ public interface MangaAPI {
       @ApiResponse(responseCode = "500", description = "An internal server error was thrown")
   })
   void update(@PathVariable("mangaId") String id, @Valid @RequestBody final UpdateMangaRequest request);
+
+  @DeleteMapping(path = "/{mangaId}")
+  @Operation(summary = "Delete a manga")
+  @ApiResponses(value = {
+      @ApiResponse(responseCode = "204", description = "Deleted successfully"),
+      @ApiResponse(responseCode = "404", description = "Not found"),
+      @ApiResponse(responseCode = "500", description = "An internal server error was thrown")
+  })
+  void delete(@PathVariable("mangaId") String id);
 }
