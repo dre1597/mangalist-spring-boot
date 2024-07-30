@@ -1,7 +1,7 @@
 package org.example.mangalistspringboot.usecases;
 
-import org.example.mangalistspringboot.api.dto.requests.UpdateMangaRequest;
-import org.example.mangalistspringboot.domain.repositories.MangaRepository;
+import org.example.mangalistspringboot.infra.api.dto.requests.UpdateMangaRequest;
+import org.example.mangalistspringboot.infra.persistence.MangaJpaRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.Objects;
@@ -10,14 +10,14 @@ import java.util.UUID;
 
 @Service
 public class UpdateMangaUseCase {
-  private final MangaRepository mangaRepository;
+  private final MangaJpaRepository mangaJpaRepository;
 
-  public UpdateMangaUseCase(final MangaRepository mangaRepository) {
-    this.mangaRepository = Objects.requireNonNull(mangaRepository);
+  public UpdateMangaUseCase(final MangaJpaRepository mangaJpaRepository) {
+    this.mangaJpaRepository = Objects.requireNonNull(mangaJpaRepository);
   }
 
   public void execute(final UUID id, final UpdateMangaRequest request) {
-    final var manga = this.mangaRepository.findById(id).orElseThrow();
+    final var manga = this.mangaJpaRepository.findById(id).orElseThrow();
 
     request.name().ifPresent(manga::setName);
     request.currentChapter().ifPresent(manga::setCurrentChapter);
@@ -28,6 +28,6 @@ public class UpdateMangaUseCase {
     request.extraInfo().ifPresent(manga::setExtraInfo);
     request.alternativeName().ifPresent(manga::setAlternativeName);
 
-    this.mangaRepository.save(manga);
+    this.mangaJpaRepository.save(manga);
   }
 }

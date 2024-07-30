@@ -1,4 +1,4 @@
-package org.example.mangalistspringboot.api.dto.responses;
+package org.example.mangalistspringboot.infra.api.dto.responses;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.example.mangalistspringboot.domain.entities.MangaStatus;

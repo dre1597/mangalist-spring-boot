@@ -1,4 +1,4 @@
-package org.example.mangalistspringboot.api.dto.requests;
+package org.example.mangalistspringboot.infra.api.dto.requests;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotBlank;

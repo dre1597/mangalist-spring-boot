@@ -1,20 +1,20 @@
 package org.example.mangalistspringboot.usecases;
 
-import org.example.mangalistspringboot.api.dto.requests.CreateMangaRequest;
-import org.example.mangalistspringboot.domain.repositories.MangaRepository;
+import org.example.mangalistspringboot.infra.api.dto.requests.CreateMangaRequest;
+import org.example.mangalistspringboot.infra.persistence.MangaJpaRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.Objects;
 
 @Service
 public class CreateMangaUseCase {
-  private final MangaRepository mangaRepository;
+  private final MangaJpaRepository mangaJpaRepository;
 
-  public CreateMangaUseCase(final MangaRepository mangaRepository) {
-    this.mangaRepository = Objects.requireNonNull(mangaRepository);
+  public CreateMangaUseCase(final MangaJpaRepository mangaJpaRepository) {
+    this.mangaJpaRepository = Objects.requireNonNull(mangaJpaRepository);
   }
 
   public void execute(final CreateMangaRequest request) {
-    this.mangaRepository.save(request.toEntity());
+    this.mangaJpaRepository.save(request.toEntity().toJpaEntity());
   }
 }

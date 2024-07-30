@@ -1,11 +1,11 @@
-package org.example.mangalistspringboot.api.controllers;
+package org.example.mangalistspringboot.infra.api.controllers;
 
-import org.example.mangalistspringboot.api.MangaAPI;
-import org.example.mangalistspringboot.api.dto.requests.CreateMangaRequest;
-import org.example.mangalistspringboot.api.dto.requests.UpdateMangaRequest;
-import org.example.mangalistspringboot.api.dto.responses.MangaResponse;
 import org.example.mangalistspringboot.domain.helpers.Pagination;
 import org.example.mangalistspringboot.domain.helpers.SearchQuery;
+import org.example.mangalistspringboot.infra.api.MangaAPI;
+import org.example.mangalistspringboot.infra.api.dto.requests.CreateMangaRequest;
+import org.example.mangalistspringboot.infra.api.dto.requests.UpdateMangaRequest;
+import org.example.mangalistspringboot.infra.api.dto.responses.MangaResponse;
 import org.example.mangalistspringboot.usecases.*;
 import org.springframework.web.bind.annotation.RestController;
 

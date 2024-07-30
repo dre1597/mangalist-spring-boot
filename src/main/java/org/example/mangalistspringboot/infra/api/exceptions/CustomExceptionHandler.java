@@ -1,4 +1,4 @@
-package org.example.mangalistspringboot.api.exceptions;
+package org.example.mangalistspringboot.infra.api.exceptions;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

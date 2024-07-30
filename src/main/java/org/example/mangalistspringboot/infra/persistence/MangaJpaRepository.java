@@ -1,6 +1,5 @@
-package org.example.mangalistspringboot.domain.repositories;
+package org.example.mangalistspringboot.infra.persistence;
 
-import org.example.mangalistspringboot.domain.entities.Manga;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -10,6 +9,6 @@ import org.springframework.stereotype.Repository;
 import java.util.UUID;
 
 @Repository
-public interface MangaRepository extends JpaRepository<Manga, UUID> {
-  Page<Manga> findAll(Specification<Manga> whereClause, Pageable page);
+public interface MangaJpaRepository extends JpaRepository<MangaJpaEntity, UUID> {
+  Page<MangaJpaEntity> findAll(Specification<MangaJpaEntity> whereClause, Pageable page);
 }

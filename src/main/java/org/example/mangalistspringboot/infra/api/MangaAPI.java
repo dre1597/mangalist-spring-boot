@@ -1,14 +1,14 @@
-package org.example.mangalistspringboot.api;
+package org.example.mangalistspringboot.infra.api;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import org.example.mangalistspringboot.api.dto.requests.CreateMangaRequest;
-import org.example.mangalistspringboot.api.dto.requests.UpdateMangaRequest;
-import org.example.mangalistspringboot.api.dto.responses.MangaResponse;
 import org.example.mangalistspringboot.domain.helpers.Pagination;
+import org.example.mangalistspringboot.infra.api.dto.requests.CreateMangaRequest;
+import org.example.mangalistspringboot.infra.api.dto.requests.UpdateMangaRequest;
+import org.example.mangalistspringboot.infra.api.dto.responses.MangaResponse;
 import org.springframework.web.bind.annotation.*;
 
 @RequestMapping(value = "/mangas")

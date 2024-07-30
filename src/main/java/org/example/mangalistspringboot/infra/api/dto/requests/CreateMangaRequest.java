@@ -1,4 +1,4 @@
-package org.example.mangalistspringboot.api.dto.requests;
+package org.example.mangalistspringboot.infra.api.dto.requests;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotBlank;
@@ -20,15 +20,13 @@ public record CreateMangaRequest(
     @JsonProperty("alternativeName") String alternativeName
 ) {
   public Manga toEntity() {
-    return new Manga(
+    return Manga.newManga(
         name,
         currentChapter,
         finalChapter,
-        status,
         englishChapter,
         portugueseChapter,
         extraInfo,
-        alternativeName
-    );
+        alternativeName);
   }
 }
