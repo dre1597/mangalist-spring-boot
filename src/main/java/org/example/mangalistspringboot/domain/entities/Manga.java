@@ -107,13 +107,14 @@ public class Manga {
   }
 
   public Manga update(final UpdateMangaRequest request) {
-    this.name = request.name().orElse(this.name);
-    this.currentChapter = request.currentChapter().orElse(this.currentChapter);
-    this.finalChapter = request.finalChapter().orElse(this.finalChapter);
-    this.englishChapter = request.englishChapter().orElse(this.englishChapter);
-    this.portugueseChapter = request.portugueseChapter().orElse(this.portugueseChapter);
-    this.extraInfo = request.extraInfo().orElse(this.extraInfo);
-    this.alternativeName = request.alternativeName().orElse(this.alternativeName);
+    this.name = request.name();
+    this.status = request.status();
+    this.currentChapter = request.currentChapter();
+    this.finalChapter = request.finalChapter();
+    this.englishChapter = request.englishChapter();
+    this.portugueseChapter = request.portugueseChapter();
+    this.extraInfo = request.extraInfo();
+    this.alternativeName = request.alternativeName();
     this.updatedAt = Instant.now();
     this.validate();
     return this;
