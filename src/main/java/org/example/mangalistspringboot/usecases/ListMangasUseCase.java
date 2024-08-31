@@ -1,5 +1,6 @@
 package org.example.mangalistspringboot.usecases;
 
+import org.example.mangalistspringboot.domain.entities.Manga;
 import org.example.mangalistspringboot.domain.helpers.Pagination;
 import org.example.mangalistspringboot.domain.helpers.SearchQuery;
 import org.example.mangalistspringboot.domain.utils.SpecificationUtils;
@@ -36,6 +37,7 @@ public class ListMangasUseCase {
         .filter(str -> !str.isBlank())
         .map(this::assembleSpecification)
         .orElse(null);
+    
     final var pageResult =
         this.mangaJpaRepository.findAll(where(where), page);
 
@@ -43,7 +45,7 @@ public class ListMangasUseCase {
         pageResult.getNumber(),
         pageResult.getSize(),
         pageResult.getTotalElements(),
-        pageResult.map(MangaJpaEntity::toResponse).toList()
+        pageResult.map(Manga::fromJpaEntity).map(Manga::toResponse).toList()
     );
   }
 

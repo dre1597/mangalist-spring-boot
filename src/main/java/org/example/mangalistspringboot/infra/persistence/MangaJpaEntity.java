@@ -1,9 +1,7 @@
 package org.example.mangalistspringboot.infra.persistence;
 
 import jakarta.persistence.*;
-import org.example.mangalistspringboot.domain.entities.Manga;
 import org.example.mangalistspringboot.domain.entities.MangaStatus;
-import org.example.mangalistspringboot.infra.api.dto.responses.MangaResponse;
 
 import java.time.Instant;
 import java.util.UUID;
@@ -14,85 +12,64 @@ public class MangaJpaEntity {
   @Id()
   @GeneratedValue(strategy = GenerationType.UUID)
   private UUID id;
+
   @Column(nullable = false, unique = true)
   private String name;
-  @Column(nullable = false)
-  private Double currentChapter;
-  @Column
-  private Double finalChapter;
+
   @Column
   private MangaStatus status = MangaStatus.PUBLISHING;
+
+  @Column(nullable = false)
+  private Double currentChapter;
+
+  @Column
+  private Double finalChapter;
+
   @Column
   private Double englishChapter;
+
   @Column
   private Double portugueseChapter;
+
   @Column
   private String extraInfo;
+
   @Column
   private String alternativeName;
+
   @Column
   private Instant createdAt = Instant.now();
+
+  @Column
+  private Instant updatedAt = Instant.now();
 
   public MangaJpaEntity(
       final UUID id,
       final String name,
+      final MangaStatus status,
       final Double currentChapter,
       final Double finalChapter,
-      final MangaStatus status,
       final Double englishChapter,
       final Double portugueseChapter,
       final String extraInfo,
       final String alternativeName,
-      final Instant createdAt
+      final Instant createdAt,
+      final Instant updatedAt
   ) {
     this.id = id;
     this.name = name;
+    this.status = status;
     this.currentChapter = currentChapter;
     this.finalChapter = finalChapter;
-    this.status = status;
     this.englishChapter = englishChapter;
     this.portugueseChapter = portugueseChapter;
     this.extraInfo = extraInfo;
     this.alternativeName = alternativeName;
     this.createdAt = createdAt;
-  }
-
-  public MangaJpaEntity(
-      final String name,
-      final Double currentChapter,
-      final Double finalChapter,
-      final MangaStatus status,
-      final Double englishChapter,
-      final Double portugueseChapter,
-      final String extraInfo,
-      final String alternativeName
-  ) {
-    this.name = name;
-    this.currentChapter = currentChapter;
-    this.finalChapter = finalChapter;
-    this.status = status;
-    this.englishChapter = englishChapter;
-    this.portugueseChapter = portugueseChapter;
-    this.extraInfo = extraInfo;
-    this.alternativeName = alternativeName;
+    this.updatedAt = updatedAt;
   }
 
   public MangaJpaEntity() {
-  }
-
-  public static MangaJpaEntity fromEntity(final Manga manga) {
-    return new MangaJpaEntity(
-        manga.getId(),
-        manga.getName(),
-        manga.getCurrentChapter(),
-        manga.getFinalChapter(),
-        manga.getStatus(),
-        manga.getEnglishChapter(),
-        manga.getPortugueseChapter(),
-        manga.getExtraInfo(),
-        manga.getAlternativeName(),
-        manga.getCreatedAt()
-    );
   }
 
   public UUID getId() {
@@ -111,6 +88,14 @@ public class MangaJpaEntity {
     this.name = name;
   }
 
+  public MangaStatus getStatus() {
+    return status;
+  }
+
+  public void setStatus(final MangaStatus status) {
+    this.status = status;
+  }
+
   public Double getCurrentChapter() {
     return currentChapter;
   }
@@ -127,14 +112,6 @@ public class MangaJpaEntity {
     this.finalChapter = finalChapter;
   }
 
-  public MangaStatus getStatus() {
-    return status;
-  }
-
-  public void setStatus(final MangaStatus status) {
-    this.status = status;
-  }
-
   public Double getEnglishChapter() {
     return englishChapter;
   }
@@ -143,7 +120,7 @@ public class MangaJpaEntity {
     this.englishChapter = englishChapter;
   }
 
-  public double getPortugueseChapter() {
+  public Double getPortugueseChapter() {
     return portugueseChapter;
   }
 
@@ -175,18 +152,11 @@ public class MangaJpaEntity {
     this.createdAt = createdAt;
   }
 
-  public MangaResponse toResponse() {
-    return new MangaResponse(
-        this.id,
-        this.name,
-        this.currentChapter,
-        this.finalChapter,
-        this.status,
-        this.englishChapter,
-        this.portugueseChapter,
-        this.extraInfo,
-        this.alternativeName,
-        this.createdAt
-    );
+  public Instant getUpdatedAt() {
+    return updatedAt;
+  }
+
+  public void setUpdatedAt(final Instant updatedAt) {
+    this.updatedAt = updatedAt;
   }
 }

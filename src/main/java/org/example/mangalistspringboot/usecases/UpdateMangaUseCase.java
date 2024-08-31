@@ -1,5 +1,6 @@
 package org.example.mangalistspringboot.usecases;
 
+import org.example.mangalistspringboot.domain.entities.Manga;
 import org.example.mangalistspringboot.infra.api.dto.requests.UpdateMangaRequest;
 import org.example.mangalistspringboot.infra.persistence.MangaJpaRepository;
 import org.springframework.stereotype.Service;
@@ -17,17 +18,9 @@ public class UpdateMangaUseCase {
   }
 
   public void execute(final UUID id, final UpdateMangaRequest request) {
-    final var manga = this.mangaJpaRepository.findById(id).orElseThrow();
-
-    request.name().ifPresent(manga::setName);
-    request.currentChapter().ifPresent(manga::setCurrentChapter);
-    request.finalChapter().ifPresent(manga::setFinalChapter);
-    request.status().ifPresent(manga::setStatus);
-    request.englishChapter().ifPresent(manga::setEnglishChapter);
-    request.portugueseChapter().ifPresent(manga::setPortugueseChapter);
-    request.extraInfo().ifPresent(manga::setExtraInfo);
-    request.alternativeName().ifPresent(manga::setAlternativeName);
-
-    this.mangaJpaRepository.save(manga);
+    final var mangaOnDatabase = this.mangaJpaRepository.findById(id).orElseThrow();
+    final var manga = Manga.fromJpaEntity(mangaOnDatabase);
+    manga.update(request);
+    this.mangaJpaRepository.save(manga.toJpaEntity());
   }
 }

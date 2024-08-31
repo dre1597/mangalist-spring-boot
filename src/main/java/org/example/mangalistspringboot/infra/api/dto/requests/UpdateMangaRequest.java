@@ -1,21 +1,17 @@
 package org.example.mangalistspringboot.infra.api.dto.requests;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.PositiveOrZero;
 import org.example.mangalistspringboot.domain.entities.MangaStatus;
 
 import java.util.Optional;
 
-// TODO: create an entity and move validation to it
-
 public record UpdateMangaRequest(
-    @JsonProperty("name") Optional<@NotBlank String> name,
-    @JsonProperty("currentChapter") Optional<@PositiveOrZero Double> currentChapter,
-    @JsonProperty("finalChapter") Optional<@PositiveOrZero Double> finalChapter,
+    @JsonProperty("name") Optional<String> name,
     @JsonProperty("status") Optional<MangaStatus> status,
-    @JsonProperty("englishChapter") Optional<@PositiveOrZero Double> englishChapter,
-    @JsonProperty("portugueseChapter") Optional<@PositiveOrZero Double> portugueseChapter,
+    @JsonProperty("currentChapter") Optional<Double> currentChapter,
+    @JsonProperty("finalChapter") Optional<Double> finalChapter,
+    @JsonProperty("englishChapter") Optional<Double> englishChapter,
+    @JsonProperty("portugueseChapter") Optional<Double> portugueseChapter,
     @JsonProperty("extraInfo") Optional<String> extraInfo,
     @JsonProperty("alternativeName") Optional<String> alternativeName
 ) {

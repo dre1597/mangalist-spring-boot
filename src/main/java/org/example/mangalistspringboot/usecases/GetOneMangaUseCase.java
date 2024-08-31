@@ -1,5 +1,6 @@
 package org.example.mangalistspringboot.usecases;
 
+import org.example.mangalistspringboot.domain.entities.Manga;
 import org.example.mangalistspringboot.infra.api.dto.responses.MangaResponse;
 import org.example.mangalistspringboot.infra.persistence.MangaJpaRepository;
 import org.springframework.stereotype.Service;
@@ -17,7 +18,7 @@ public class GetOneMangaUseCase {
   }
 
   public MangaResponse execute(final UUID id) {
-    final var manga = this.mangaJpaRepository.findById(id).orElseThrow();
-    return manga.toResponse();
+    final var mangaJpaEntity = this.mangaJpaRepository.findById(id).orElseThrow();
+    return Manga.fromJpaEntity(mangaJpaEntity).toResponse();
   }
 }
