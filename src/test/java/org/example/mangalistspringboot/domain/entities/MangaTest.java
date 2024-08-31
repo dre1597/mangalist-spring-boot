@@ -1,9 +1,13 @@
 package org.example.mangalistspringboot.domain.entities;
 
 import org.example.mangalistspringboot.infra.api.dto.requests.UpdateMangaRequest;
+import org.example.mangalistspringboot.infra.persistence.MangaJpaEntity;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+
+import java.time.Instant;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -193,6 +197,39 @@ class MangaTest {
     assertEquals(expectedMessage, exception.getMessage());
   }
 
+  @Test
+  void shouldUpdateMangaWithAllFields() {
+    final var manga = this.createManga();
+    final var dto = new UpdateMangaRequest(
+        "updatedManga",
+        MangaStatus.FINISHED,
+        100.0,
+        200.0,
+        200.0,
+        200.0,
+        "Updated extra info",
+        "Updated alternative name"
+    );
+    var updatedManga = manga.update(dto);
+    assertEquals(dto.name(), manga.getName());
+    assertEquals(dto.status(), manga.getStatus());
+    assertEquals(dto.currentChapter(), manga.getCurrentChapter());
+    assertEquals(dto.finalChapter(), manga.getFinalChapter());
+    assertEquals(dto.englishChapter(), manga.getEnglishChapter());
+    assertEquals(dto.portugueseChapter(), manga.getPortugueseChapter());
+    assertEquals(dto.extraInfo(), manga.getExtraInfo());
+    assertEquals(dto.alternativeName(), manga.getAlternativeName());
+
+    assertEquals(dto.name(), updatedManga.getName());
+    assertEquals(dto.status(), updatedManga.getStatus());
+    assertEquals(dto.currentChapter(), updatedManga.getCurrentChapter());
+    assertEquals(dto.finalChapter(), updatedManga.getFinalChapter());
+    assertEquals(dto.englishChapter(), updatedManga.getEnglishChapter());
+    assertEquals(dto.portugueseChapter(), updatedManga.getPortugueseChapter());
+    assertEquals(dto.extraInfo(), updatedManga.getExtraInfo());
+    assertEquals(dto.alternativeName(), updatedManga.getAlternativeName());
+  }
+
   @ParameterizedTest
   @CsvSource({
       "'null', 'Name cannot be null or empty'",
@@ -341,6 +378,57 @@ class MangaTest {
     assertEquals(expectedMessage, exception.getMessage());
   }
 
+  @Test
+  void shouldTransformMangaEntityIntoJpaEntity() {
+    final var manga = this.createManga();
+    final var mangaJpaEntity = manga.toJpaEntity();
+    assertEquals(manga.getId(), mangaJpaEntity.getId());
+    assertEquals(manga.getName(), mangaJpaEntity.getName());
+    assertEquals(manga.getStatus(), mangaJpaEntity.getStatus());
+    assertEquals(manga.getCurrentChapter(), mangaJpaEntity.getCurrentChapter());
+    assertEquals(manga.getFinalChapter(), mangaJpaEntity.getFinalChapter());
+    assertEquals(manga.getEnglishChapter(), mangaJpaEntity.getEnglishChapter());
+    assertEquals(manga.getPortugueseChapter(), mangaJpaEntity.getPortugueseChapter());
+    assertEquals(manga.getExtraInfo(), mangaJpaEntity.getExtraInfo());
+    assertEquals(manga.getAlternativeName(), mangaJpaEntity.getAlternativeName());
+    assertEquals(manga.getCreatedAt(), mangaJpaEntity.getCreatedAt());
+    assertEquals(manga.getUpdatedAt(), mangaJpaEntity.getUpdatedAt());
+  }
+
+  @Test
+  void shouldTransformMangaJpaEntityIntoEntity() {
+    final var mangaJpaEntity = this.createMangaJpaEntity();
+    final var manga = Manga.fromJpaEntity(mangaJpaEntity);
+    assertEquals(manga.getId(), mangaJpaEntity.getId());
+    assertEquals(manga.getName(), mangaJpaEntity.getName());
+    assertEquals(manga.getStatus(), mangaJpaEntity.getStatus());
+    assertEquals(manga.getCurrentChapter(), mangaJpaEntity.getCurrentChapter());
+    assertEquals(manga.getFinalChapter(), mangaJpaEntity.getFinalChapter());
+    assertEquals(manga.getEnglishChapter(), mangaJpaEntity.getEnglishChapter());
+    assertEquals(manga.getPortugueseChapter(), mangaJpaEntity.getPortugueseChapter());
+    assertEquals(manga.getExtraInfo(), mangaJpaEntity.getExtraInfo());
+    assertEquals(manga.getAlternativeName(), mangaJpaEntity.getAlternativeName());
+    assertEquals(manga.getCreatedAt(), mangaJpaEntity.getCreatedAt());
+    assertEquals(manga.getUpdatedAt(), mangaJpaEntity.getUpdatedAt());
+  }
+
+  @Test
+  void shouldTransformMangaIntoMangaResponse() {
+    final var manga = this.createManga();
+    final var mangaResponse = manga.toResponse();
+    assertEquals(manga.getId(), mangaResponse.id());
+    assertEquals(manga.getName(), mangaResponse.name());
+    assertEquals(manga.getStatus(), mangaResponse.status());
+    assertEquals(manga.getCurrentChapter(), mangaResponse.currentChapter());
+    assertEquals(manga.getFinalChapter(), mangaResponse.finalChapter());
+    assertEquals(manga.getEnglishChapter(), mangaResponse.englishChapter());
+    assertEquals(manga.getPortugueseChapter(), mangaResponse.portugueseChapter());
+    assertEquals(manga.getExtraInfo(), mangaResponse.extraInfo());
+    assertEquals(manga.getAlternativeName(), mangaResponse.alternativeName());
+    assertEquals(manga.getCreatedAt(), mangaResponse.createdAt());
+    assertEquals(manga.getUpdatedAt(), mangaResponse.updatedAt());
+  }
+
   private Manga createManga() {
     return Manga.newManga(
         "Manga",
@@ -351,6 +439,22 @@ class MangaTest {
         10.0,
         "Extra info",
         "Alternative name"
+    );
+  }
+
+  private MangaJpaEntity createMangaJpaEntity() {
+    return new MangaJpaEntity(
+        UUID.randomUUID(),
+        "Manga",
+        MangaStatus.PUBLISHING,
+        1.0,
+        10.0,
+        10.0,
+        10.0,
+        "Extra info",
+        "Alternative name",
+        Instant.now(),
+        Instant.now()
     );
   }
 }
