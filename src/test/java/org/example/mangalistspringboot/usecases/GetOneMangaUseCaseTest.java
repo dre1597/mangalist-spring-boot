@@ -28,7 +28,7 @@ class GetOneMangaUseCaseTest {
 
   @Test
   void shouldReturnMangaResponseWhenMangaExists() {
-    UUID id = UUID.randomUUID();
+    var id = UUID.randomUUID();
     Instant now = Instant.now();
 
     var mangaJpaEntity = new MangaJpaEntity(
