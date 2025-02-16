@@ -9,6 +9,7 @@ import org.example.mangalistspringboot.domain.helpers.Pagination;
 import org.example.mangalistspringboot.infra.api.dto.requests.CreateMangaRequest;
 import org.example.mangalistspringboot.infra.api.dto.requests.UpdateMangaRequest;
 import org.example.mangalistspringboot.infra.api.dto.responses.MangaResponse;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RequestMapping(value = "/mangas")
@@ -36,7 +37,7 @@ public interface MangaAPI {
       @ApiResponse(responseCode = "422", description = "A invalid parameter was received"),
       @ApiResponse(responseCode = "500", description = "An internal server error was thrown")
   })
-  void add(@Valid @RequestBody final CreateMangaRequest request);
+  ResponseEntity<Object> add(@Valid @RequestBody final CreateMangaRequest request);
 
   @GetMapping(path = "/{mangaId}")
   @Operation(summary = "Get one manga")
@@ -55,7 +56,7 @@ public interface MangaAPI {
       @ApiResponse(responseCode = "422", description = "A invalid parameter was received"),
       @ApiResponse(responseCode = "500", description = "An internal server error was thrown")
   })
-  void update(@PathVariable("mangaId") String id, @Valid @RequestBody final UpdateMangaRequest request);
+  ResponseEntity<Object> update(@PathVariable("mangaId") String id, @Valid @RequestBody final UpdateMangaRequest request);
 
   @DeleteMapping(path = "/{mangaId}")
   @Operation(summary = "Delete a manga")
@@ -64,5 +65,5 @@ public interface MangaAPI {
       @ApiResponse(responseCode = "404", description = "Not found"),
       @ApiResponse(responseCode = "500", description = "An internal server error was thrown")
   })
-  void delete(@PathVariable("mangaId") String id);
+  ResponseEntity<Object> delete(@PathVariable("mangaId") String id);
 }

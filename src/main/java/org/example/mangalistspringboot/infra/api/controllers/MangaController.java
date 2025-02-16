@@ -7,6 +7,8 @@ import org.example.mangalistspringboot.infra.api.dto.requests.CreateMangaRequest
 import org.example.mangalistspringboot.infra.api.dto.requests.UpdateMangaRequest;
 import org.example.mangalistspringboot.infra.api.dto.responses.MangaResponse;
 import org.example.mangalistspringboot.usecases.*;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.UUID;
@@ -45,8 +47,9 @@ public class MangaController implements MangaAPI {
   }
 
   @Override
-  public void add(final CreateMangaRequest request) {
+  public ResponseEntity<Object> add(final CreateMangaRequest request) {
     this.createMangaUseCase.execute(request);
+    return ResponseEntity.status(HttpStatus.CREATED).body(null);
   }
 
   @Override
@@ -55,12 +58,14 @@ public class MangaController implements MangaAPI {
   }
 
   @Override
-  public void update(final String id, final UpdateMangaRequest request) {
+  public ResponseEntity<Object> update(final String id, final UpdateMangaRequest request) {
     this.updateMangaUseCase.execute(UUID.fromString(id), request);
+    return ResponseEntity.status(HttpStatus.OK).body(null);
   }
 
   @Override
-  public void delete(final String id) {
+  public ResponseEntity<Object> delete(final String id) {
     this.deleteMangaUseCase.execute(UUID.fromString(id));
+    return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
   }
 }
