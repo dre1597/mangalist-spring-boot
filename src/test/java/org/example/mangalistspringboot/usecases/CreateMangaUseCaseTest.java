@@ -11,9 +11,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class CreateMangaUseCaseTest {
@@ -24,7 +23,7 @@ class CreateMangaUseCaseTest {
   private MangaJpaRepository mangaJpaRepository;
 
   @Test
-  void shouldCreateAManga() {
+  void shouldCreateAMangaWithAllFields() {
     var request = new CreateMangaRequest(
         "any_manga",
         MangaStatus.PUBLISHING,
@@ -50,5 +49,57 @@ class CreateMangaUseCaseTest {
     assertEquals(10.0, capturedEntity.getPortugueseChapter());
     assertEquals("any_extra_info", capturedEntity.getExtraInfo());
     assertEquals("any_alternative_name", capturedEntity.getAlternativeName());
+  }
+
+  @Test
+  void shouldCreateAMangaWithOnlyRequiredFields() {
+    var request = new CreateMangaRequest(
+        "any_manga",
+        MangaStatus.PUBLISHING,
+        1.0,
+        null,
+        null,
+        null,
+        null,
+        null
+    );
+
+    createMangaUseCase.execute(request);
+
+    ArgumentCaptor<MangaJpaEntity> mangaJpaEntityCaptor = ArgumentCaptor.forClass(MangaJpaEntity.class);
+    verify(mangaJpaRepository, times(1)).save(mangaJpaEntityCaptor.capture());
+
+    MangaJpaEntity capturedEntity = mangaJpaEntityCaptor.getValue();
+    assertEquals("any_manga", capturedEntity.getName());
+    assertEquals(MangaStatus.PUBLISHING, capturedEntity.getStatus());
+    assertEquals(1.0, capturedEntity.getCurrentChapter());
+    assertNull(capturedEntity.getFinalChapter());
+    assertNull(capturedEntity.getEnglishChapter());
+    assertNull(capturedEntity.getPortugueseChapter());
+    assertNull(capturedEntity.getExtraInfo());
+    assertNull(capturedEntity.getAlternativeName());
+  }
+
+  @Test
+  void shouldThrowExceptionWhenRequestIsNull() {
+    assertThrows(NullPointerException.class, () -> createMangaUseCase.execute(null));
+  }
+
+  @Test
+  void shouldPropagateRepositoryException() {
+    var request = new CreateMangaRequest(
+        "any_manga",
+        MangaStatus.PUBLISHING,
+        1.0,
+        10.0,
+        10.0,
+        10.0,
+        "any_extra_info",
+        "any_alternative_name"
+    );
+
+    doThrow(new RuntimeException("Database error")).when(mangaJpaRepository).save(any(MangaJpaEntity.class));
+
+    assertThrows(RuntimeException.class, () -> createMangaUseCase.execute(request));
   }
 }
