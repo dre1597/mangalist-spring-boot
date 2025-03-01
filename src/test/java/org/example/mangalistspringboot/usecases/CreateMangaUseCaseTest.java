@@ -1,6 +1,7 @@
 package org.example.mangalistspringboot.usecases;
 
 import org.example.mangalistspringboot.domain.entities.MangaStatus;
+import org.example.mangalistspringboot.domain.exceptions.MangaAlreadyExistsException;
 import org.example.mangalistspringboot.infra.api.dto.requests.CreateMangaRequest;
 import org.example.mangalistspringboot.infra.persistence.MangaJpaEntity;
 import org.example.mangalistspringboot.infra.persistence.MangaJpaRepository;
@@ -101,5 +102,24 @@ class CreateMangaUseCaseTest {
     doThrow(new RuntimeException("Database error")).when(mangaJpaRepository).save(any(MangaJpaEntity.class));
 
     assertThrows(RuntimeException.class, () -> createMangaUseCase.execute(request));
+  }
+
+  @Test
+  void shouldThrowMangaAlreadyExistsExceptionWhenMangaExists() {
+    var request = new CreateMangaRequest(
+        "any_manga",
+        MangaStatus.PUBLISHING,
+        1.0,
+        10.0,
+        10.0,
+        10.0,
+        "any_extra_info",
+        "any_alternative_name"
+    );
+
+    when(mangaJpaRepository.existsByName(request.name())).thenReturn(true);
+
+    assertThrows(MangaAlreadyExistsException.class, () -> createMangaUseCase.execute(request));
+    verify(mangaJpaRepository, never()).save(any(MangaJpaEntity.class));
   }
 }

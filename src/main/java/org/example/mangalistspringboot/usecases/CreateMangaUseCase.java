@@ -1,5 +1,6 @@
 package org.example.mangalistspringboot.usecases;
 
+import org.example.mangalistspringboot.domain.exceptions.MangaAlreadyExistsException;
 import org.example.mangalistspringboot.infra.api.dto.requests.CreateMangaRequest;
 import org.example.mangalistspringboot.infra.persistence.MangaJpaRepository;
 import org.springframework.stereotype.Service;
@@ -15,6 +16,12 @@ public class CreateMangaUseCase {
   }
 
   public void execute(final CreateMangaRequest request) {
+    var exists = this.mangaJpaRepository.existsByName(request.name());
+
+    if (exists != null) {
+      throw new MangaAlreadyExistsException("Manga already exists");
+    }
+
     this.mangaJpaRepository.save(request.toEntity().toJpaEntity());
   }
 }

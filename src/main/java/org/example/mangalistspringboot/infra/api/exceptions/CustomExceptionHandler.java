@@ -1,5 +1,6 @@
 package org.example.mangalistspringboot.infra.api.exceptions;
 
+import org.example.mangalistspringboot.domain.exceptions.MangaAlreadyExistsException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -54,5 +55,22 @@ public class CustomExceptionHandler {
     responseBody.put("statusCode", 404);
 
     return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseBody);
+  }
+
+  @ExceptionHandler(MangaAlreadyExistsException.class)
+  public ResponseEntity<Map<String, Object>> handleMangaAlreadyExistsException(final MangaAlreadyExistsException exception) {
+    var responseBody = new HashMap<String, Object>();
+    responseBody.put("message", exception.getMessage());
+    responseBody.put("statusCode", 409);
+
+    return ResponseEntity.status(HttpStatus.CONFLICT).body(responseBody);
+  }
+
+  @ExceptionHandler(RuntimeException.class)
+  public ResponseEntity<Map<String, Object>> handleRuntimeException(final RuntimeException exception) {
+    var responseBody = new HashMap<String, Object>();
+    responseBody.put("message", "An unexpected error occurred: " + exception.getMessage());
+    responseBody.put("statusCode", 500);
+    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responseBody);
   }
 }

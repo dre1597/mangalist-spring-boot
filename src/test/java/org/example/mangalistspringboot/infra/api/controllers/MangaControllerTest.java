@@ -1,11 +1,13 @@
 package org.example.mangalistspringboot.infra.api.controllers;
 
 import org.example.mangalistspringboot.domain.entities.MangaStatus;
+import org.example.mangalistspringboot.domain.exceptions.MangaAlreadyExistsException;
 import org.example.mangalistspringboot.domain.helpers.Pagination;
 import org.example.mangalistspringboot.domain.helpers.SearchQuery;
 import org.example.mangalistspringboot.infra.api.dto.requests.CreateMangaRequest;
 import org.example.mangalistspringboot.infra.api.dto.requests.UpdateMangaRequest;
 import org.example.mangalistspringboot.infra.api.dto.responses.MangaResponse;
+import org.example.mangalistspringboot.infra.api.exceptions.CustomExceptionHandler;
 import org.example.mangalistspringboot.usecases.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -21,6 +23,7 @@ import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -50,7 +53,9 @@ class MangaControllerTest {
 
   @BeforeEach
   void setUp() {
-    mockMvc = MockMvcBuilders.standaloneSetup(mangaController).build();
+    mockMvc = MockMvcBuilders.standaloneSetup(mangaController)
+        .setControllerAdvice(new CustomExceptionHandler())
+        .build();
   }
 
   @Test
@@ -103,6 +108,96 @@ class MangaControllerTest {
                 }
                 """))
         .andExpect(status().isCreated());
+
+    verify(createMangaUseCase, times(1)).execute(request);
+  }
+
+  @Test
+  void shouldReturnConflictWhenMangaAlreadyExists() throws Exception {
+    var request = new CreateMangaRequest(
+        "manga_name",
+        MangaStatus.PUBLISHING,
+        1.0,
+        10.0,
+        10.0,
+        10.0,
+        "extra_info",
+        "alternative_name"
+    );
+
+    doThrow(new MangaAlreadyExistsException("Manga already exists"))
+        .when(createMangaUseCase).execute(request);
+
+    mockMvc.perform(post("/mangas")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content("""
+                {
+                  "name": "manga_name",
+                  "status": "PUBLISHING",
+                  "currentChapter": 1.0,
+                  "finalChapter": 10.0,
+                  "englishChapter": 10.0,
+                  "portugueseChapter": 10.0,
+                  "extraInfo": "extra_info",
+                  "alternativeName": "alternative_name"
+                }
+                """))
+        .andExpect(status().isConflict())
+        .andExpect(result -> assertEquals("Manga already exists", result.getResolvedException().getMessage()));
+
+    verify(createMangaUseCase, times(1)).execute(request);
+  }
+
+  @Test
+  void shouldReturnBadRequestWhenInvalidRequestBody() throws Exception {
+    mockMvc.perform(post("/mangas")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content("""
+                {
+                  "name": "",
+                  "status": "INVALID_STATUS",
+                  "currentChapter": -1.0,
+                  "finalChapter": -1.0,
+                  "englishChapter": -1.0,
+                  "portugueseChapter": -1.0,
+                  "extraInfo": "",
+                  "alternativeName": ""
+                }
+                """))
+        .andExpect(status().isBadRequest());
+  }
+
+  @Test
+  void shouldReturnInternalServerErrorWhenUnexpectedErrorOccurs() throws Exception {
+    var request = new CreateMangaRequest(
+        "manga_name",
+        MangaStatus.PUBLISHING,
+        1.0,
+        10.0,
+        10.0,
+        10.0,
+        "extra_info",
+        "alternative_name"
+    );
+
+    doThrow(new RuntimeException("Unexpected error"))
+        .when(createMangaUseCase).execute(request);
+
+    mockMvc.perform(post("/mangas")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content("""
+                {
+                  "name": "manga_name",
+                  "status": "PUBLISHING",
+                  "currentChapter": 1.0,
+                  "finalChapter": 10.0,
+                  "englishChapter": 10.0,
+                  "portugueseChapter": 10.0,
+                  "extraInfo": "extra_info",
+                  "alternativeName": "alternative_name"
+                }
+                """))
+        .andExpect(status().isInternalServerError());
 
     verify(createMangaUseCase, times(1)).execute(request);
   }

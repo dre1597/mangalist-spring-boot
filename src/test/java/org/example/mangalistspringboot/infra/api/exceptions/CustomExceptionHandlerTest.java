@@ -1,5 +1,6 @@
 package org.example.mangalistspringboot.infra.api.exceptions;
 
+import org.example.mangalistspringboot.domain.exceptions.MangaAlreadyExistsException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -79,5 +80,27 @@ class CustomExceptionHandlerTest {
     assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
     assertEquals(404, response.getBody().get("statusCode"));
     assertEquals("Resource not found", response.getBody().get("message"));
+  }
+
+  @Test
+  void shouldHandleMangaAlreadyExistsException() {
+    var exception = new MangaAlreadyExistsException("Manga already exists");
+
+    var response = customExceptionHandler.handleMangaAlreadyExistsException(exception);
+
+    assertEquals(HttpStatus.CONFLICT, response.getStatusCode());
+    assertEquals(409, response.getBody().get("statusCode"));
+    assertEquals("Manga already exists", response.getBody().get("message"));
+  }
+
+  @Test
+  void shouldHandleUnexpectedException() {
+    var exception = new RuntimeException("Unexpected error");
+
+    var response = customExceptionHandler.handleRuntimeException(exception);
+
+    assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
+    assertEquals(500, response.getBody().get("statusCode"));
+    assertEquals("An unexpected error occurred: Unexpected error", response.getBody().get("message"));
   }
 }
