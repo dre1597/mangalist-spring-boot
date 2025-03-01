@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Objects;
 import java.util.UUID;
 
 @RestController
@@ -28,11 +29,11 @@ public class MangaController implements MangaAPI {
       final UpdateMangaUseCase updateMangaUseCase,
       final DeleteMangaUseCase deleteMangaUseCase
   ) {
-    this.listMangasUseCase = listMangasUseCase;
-    this.createMangaUseCase = createMangaUseCase;
-    this.getOneMangaUseCase = getOneMangaUseCase;
-    this.updateMangaUseCase = updateMangaUseCase;
-    this.deleteMangaUseCase = deleteMangaUseCase;
+    this.listMangasUseCase = Objects.requireNonNull(listMangasUseCase);
+    this.createMangaUseCase = Objects.requireNonNull(createMangaUseCase);
+    this.getOneMangaUseCase = Objects.requireNonNull(getOneMangaUseCase);
+    this.updateMangaUseCase = Objects.requireNonNull(updateMangaUseCase);
+    this.deleteMangaUseCase = Objects.requireNonNull(deleteMangaUseCase);
   }
 
   @Override
