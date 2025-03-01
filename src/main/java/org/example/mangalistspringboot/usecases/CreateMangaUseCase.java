@@ -18,7 +18,7 @@ public class CreateMangaUseCase {
   public void execute(final CreateMangaRequest request) {
     var exists = this.mangaJpaRepository.existsByName(request.name());
 
-    if (exists != null) {
+    if (exists) {
       throw new MangaAlreadyExistsException("Manga already exists");
     }
 

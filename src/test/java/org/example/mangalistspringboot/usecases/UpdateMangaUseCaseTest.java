@@ -1,6 +1,7 @@
 package org.example.mangalistspringboot.usecases;
 
 import org.example.mangalistspringboot.domain.entities.MangaStatus;
+import org.example.mangalistspringboot.domain.exceptions.MangaAlreadyExistsException;
 import org.example.mangalistspringboot.infra.api.dto.requests.UpdateMangaRequest;
 import org.example.mangalistspringboot.infra.persistence.MangaJpaEntity;
 import org.example.mangalistspringboot.infra.persistence.MangaJpaRepository;
@@ -92,6 +93,91 @@ class UpdateMangaUseCaseTest {
     when(mangaJpaRepository.findById(id)).thenReturn(Optional.empty());
 
     assertThrows(RuntimeException.class, () -> updateMangaUseCase.execute(id, request));
+    verify(mangaJpaRepository, never()).save(any());
+  }
+
+  @Test
+  void shouldAllowSameNameDuringUpdate() {
+    var id = UUID.randomUUID();
+    var now = Instant.now();
+
+    var mangaJpaEntity = new MangaJpaEntity(
+        id,
+        "old_name",
+        MangaStatus.PUBLISHING,
+        1.0,
+        10.0,
+        10.0,
+        10.0,
+        "old_extra_info",
+        "old_alternative_name",
+        now,
+        now
+    );
+
+    var request = new UpdateMangaRequest(
+        "old_name",
+        MangaStatus.FINISHED,
+        2.0,
+        20.0,
+        20.0,
+        20.0,
+        "new_extra_info",
+        "new_alternative_name"
+    );
+
+    when(mangaJpaRepository.findById(id)).thenReturn(Optional.of(mangaJpaEntity));
+
+    updateMangaUseCase.execute(id, request);
+
+    ArgumentCaptor<MangaJpaEntity> mangaJpaEntityCaptor = ArgumentCaptor.forClass(MangaJpaEntity.class);
+    verify(mangaJpaRepository, times(1)).save(mangaJpaEntityCaptor.capture());
+
+    var savedEntity = mangaJpaEntityCaptor.getValue();
+    assertEquals("old_name", savedEntity.getName());
+    assertEquals(MangaStatus.FINISHED, savedEntity.getStatus());
+    assertEquals(2.0, savedEntity.getCurrentChapter());
+    assertEquals(20.0, savedEntity.getFinalChapter());
+    assertEquals(20.0, savedEntity.getEnglishChapter());
+    assertEquals(20.0, savedEntity.getPortugueseChapter());
+    assertEquals("new_extra_info", savedEntity.getExtraInfo());
+    assertEquals("new_alternative_name", savedEntity.getAlternativeName());
+  }
+
+  @Test
+  void shouldThrowMangaAlreadyExistsExceptionWhenNewNameExists() {
+    var id = UUID.randomUUID();
+    var now = Instant.now();
+
+    var mangaJpaEntity = new MangaJpaEntity(
+        id,
+        "old_name",
+        MangaStatus.PUBLISHING,
+        1.0,
+        10.0,
+        10.0,
+        10.0,
+        "old_extra_info",
+        "old_alternative_name",
+        now,
+        now
+    );
+
+    var request = new UpdateMangaRequest(
+        "existing_name",
+        MangaStatus.FINISHED,
+        2.0,
+        20.0,
+        20.0,
+        20.0,
+        "new_extra_info",
+        "new_alternative_name"
+    );
+
+    when(mangaJpaRepository.findById(id)).thenReturn(Optional.of(mangaJpaEntity));
+    when(mangaJpaRepository.existsByName("existing_name")).thenReturn(true);
+
+    assertThrows(MangaAlreadyExistsException.class, () -> updateMangaUseCase.execute(id, request));
     verify(mangaJpaRepository, never()).save(any());
   }
 }
