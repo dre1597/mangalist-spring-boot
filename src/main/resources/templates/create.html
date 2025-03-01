@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+          name="viewport">
+    <meta content="ie=edge" http-equiv="X-UA-Compatible">
+    <title>MangaList</title>
+    <link href="/webjars/bootstrap/css/bootstrap.min.css" rel="stylesheet"/>
+    <link href="/css/style.css" rel="stylesheet"/>
+  </head>
+  <body class="bg-dark text-white d-flex flex-column min-vh-100">
+    <main class="container my-5 w-80 mx-auto">
+      <header class="text-center mb-4">
+        <h1 class="card-title">Create Manga</h1>
+      </header>
+      <main class="card bg-secondary text-white p-4">
+        <form id="mangaForm">
+          <input name="id" th:value="${manga != null} ? ${manga.id} : ''" type="hidden">
+
+          <div class="mb-3">
+            <label class="form-label" for="name">Name</label>
+            <input
+                class="form-control bg-dark text-white"
+                id="name"
+                name="name"
+                required
+                th:value="${manga != null} ? ${manga.name} : ''"
+                type="text"
+            />
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label" for="alternativeName">Alternative Name</label>
+            <input
+                class="form-control bg-dark text-white"
+                id="alternativeName"
+                name="alternativeName"
+                th:value="${manga != null} ? ${manga.alternativeName} : ''"
+                type="text"
+            />
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label" for="status">Status</label>
+            <select
+                aria-label="Manga status"
+                class="form-select bg-dark text-white"
+                id="status"
+                name="status"
+                required
+                th:value="${manga != null} ? ${manga.status} : ''"
+            >
+              <option value="0">PUBLISHING</option>
+              <option value="1">HIATUS</option>
+              <option value="2">FINISHED</option>
+            </select>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label" for="currentChapter">Current Chapter</label>
+            <input
+                class="form-control bg-dark text-white"
+                id="currentChapter"
+                min="1"
+                name="currentChapter"
+                required
+                th:value="${manga != null} ? ${manga.currentChapter} : ''"
+                type="number"
+            />
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label" for="finalChapter">Final chapter</label>
+            <input
+                class="form-select bg-dark text-white"
+                id="finalChapter"
+                min="0"
+                name="finalChapter"
+                th:value="${manga != null} ? ${manga.finalChapter} : ''"
+                type="number"
+            />
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label" for="englishChapter">English chapter</label>
+            <input
+                class="form-control bg-dark text-white"
+                id="englishChapter"
+                min="0"
+                name="englishChapter" th:value="${manga != null} ? ${manga.englishChapter} : ''"
+                type="number"
+            />
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label" for="portugueseChapter">Portuguese chapter</label>
+            <input
+                class="form-control bg-dark text-white"
+                id="portugueseChapter"
+                min="0"
+                name="portugueseChapter"
+                th:value="${manga != null} ? ${manga.portugueseChapter} : ''"
+                type="number"
+            />
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label" for="extraInfo">Extra information</label>
+            <textarea
+                class="form-control bg-dark text-white"
+                id="extraInfo"
+                name="extraInfo"
+                rows="3"
+                th:text="${manga != null} ? ${manga.extraInfo} : ''"
+            />
+          </div>
+
+          <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+            <a class="btn btn-danger" th:href="@{/}">Cancel</a>
+            <button class="btn btn-success me-md-2" type="submit">Submit</button>
+          </div>
+        </form>
+      </main>
+    </main>
+
+    <script>
+      document.getElementById('mangaForm').addEventListener('submit', function (event) {
+        event.preventDefault();
+
+        const formData = {
+          name: document.getElementById('name').value.trim(),
+          alternativeName: document.getElementById('alternativeName').value.trim() ? document.getElementById('alternativeName').value.trim() : null,
+          status: parseInt(document.getElementById('status').value),
+          currentChapter: parseInt(document.getElementById('currentChapter').value),
+          finalChapter: parseInt(document.getElementById('finalChapter').value),
+          englishChapter: parseInt(document.getElementById('englishChapter').value),
+          portugueseChapter: parseInt(document.getElementById('portugueseChapter').value),
+          extraInfo: document.getElementById('extraInfo').value.trim() ? document.getElementById('extraInfo').value.trim() : null
+        };
+
+        const mangaId = document.querySelector('input[name="id"]').value;
+        const url = mangaId ? `/mangas/${mangaId}` : '/mangas';
+        const method = mangaId ? 'PATCH' : 'POST';
+
+        fetch(url, {
+          method: method,
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(formData)
+        })
+          .then(response => {
+            if (response.ok) {
+              window.location.href = '/';
+            } else {
+              alert('Failed to save manga. Please try again.');
+            }
+          })
+          .catch(error => {
+            console.error('Error:', error);
+            alert('An error occurred. Please try again.');
+          });
+      });
+    </script>
+  </body>
+</html>

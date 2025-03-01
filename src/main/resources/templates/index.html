@@ -5,10 +5,48 @@
     <meta content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
           name="viewport">
     <meta content="ie=edge" http-equiv="X-UA-Compatible">
-    <title>Manga List</title>
+    <title>MangaList</title>
+    <link href="/webjars/bootstrap/css/bootstrap.min.css" rel="stylesheet"/>
+    <link href="/css/style.css" rel="stylesheet"/>
   </head>
-  <body>
-    <h1>Home page</h1>
-    <p th:text="${message}"></p>
+  <body class="bg-dark text-white">
+    <div class="container mt-5">
+      <h1 class="text-center mb-4">Manga List</h1>
+      <main class="table-responsive">
+        <table class="table table-dark table-striped table-hover">
+          <thead class="thead-light">
+            <tr>
+              <th scope="col">Name</th>
+              <th scope="col">Alternative Name</th>
+              <th scope="col">Status</th>
+              <th scope="col">Current chapter</th>
+              <th scope="col">Final chapter</th>
+              <th scope="col">English chapter</th>
+              <th scope="col">Extra information</th>
+              <th scope="col"></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr th:each="manga : ${mangas}">
+              <td th:text="${manga.name()}"></td>
+              <td th:text="${manga.alternativeName() != null} ? ${manga.alternativeName()} : 'N/A'"></td>
+              <td th:text="${manga.status()}"></td>
+              <td th:text="${manga.currentChapter()}"></td>
+              <td th:text="${manga.finalChapter() != null} ? ${manga.finalChapter()} : 'N/A'"></td>
+              <td th:text="${manga.englishChapter() != null} ? ${manga.finalChapter()} : 'N/A'"></td>
+              <td th:text="${manga.extraInfo() != null} ? ${manga.extraInfo()} : 'N/A'"></td>
+              <td colspan="2">
+                <a class="btn btn-info btn-sm cursor-pointer" role="button" th:href="@{'/edit/' + ${manga.id}}">
+                  <span aria-hidden="true" title="Edit">Edit</span>
+                </a>
+                <a class="btn btn-danger btn-sm cursor-pointer" role="button" th:href="@{'/delete/' + ${manga.id}}">
+                  <span aria-hidden="true" title="Delete">Delete</span>
+                </a>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </main>
+    </div>
   </body>
 </html>
