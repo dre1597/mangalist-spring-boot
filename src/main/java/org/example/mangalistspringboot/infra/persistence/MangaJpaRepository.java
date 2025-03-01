@@ -10,7 +10,7 @@ import java.util.UUID;
 
 @Repository
 public interface MangaJpaRepository extends JpaRepository<MangaJpaEntity, UUID> {
-  Page<MangaJpaEntity> findAll(Specification<MangaJpaEntity> whereClause, Pageable page);
+  Page<MangaJpaEntity> findAll(final Specification<MangaJpaEntity> whereClause, final Pageable page);
 
-  boolean existsByName(String name);
+  boolean existsByName(final String name);
 }

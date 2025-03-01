@@ -21,6 +21,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -230,6 +231,18 @@ class MangaControllerTest {
   }
 
   @Test
+  void shouldReturnNotFoundWhenMangaDoesNotExist() throws Exception {
+    var id = UUID.randomUUID();
+    when(getOneMangaUseCase.execute(id)).thenThrow(new NoSuchElementException("Manga not found"));
+
+    mockMvc.perform(get("/mangas/{mangaId}", id))
+        .andExpect(status().isNotFound())
+        .andExpect(result -> assertEquals("Manga not found", result.getResolvedException().getMessage()));
+
+    verify(getOneMangaUseCase, times(1)).execute(id);
+  }
+
+  @Test
   void shouldUpdateManga() throws Exception {
     var id = UUID.randomUUID();
     var request = new UpdateMangaRequest(
@@ -263,11 +276,67 @@ class MangaControllerTest {
   }
 
   @Test
+  void shouldReturnBadRequestWhenUpdatingWithInvalidData() throws Exception {
+    var id = UUID.randomUUID();
+    mockMvc.perform(patch("/mangas/{mangaId}", id)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content("""
+                {
+                  "name": "",
+                  "status": "INVALID_STATUS",
+                  "currentChapter": -1.0,
+                  "finalChapter": -1.0,
+                  "englishChapter": -1.0,
+                  "portugueseChapter": -1.0,
+                  "extraInfo": "",
+                  "alternativeName": ""
+                }
+                """))
+        .andExpect(status().isBadRequest());
+  }
+
+  @Test
+  void shouldReturnNotFoundWhenUpdatingNonExistentManga() throws Exception {
+    var id = UUID.randomUUID();
+    var request = new UpdateMangaRequest("updated_name", MangaStatus.FINISHED, 2.0, 20.0, 20.0, 20.0, "extra_info", "alt_name");
+    doThrow(new NoSuchElementException("Manga not found"))
+        .when(updateMangaUseCase).execute(id, request);
+
+    mockMvc.perform(patch("/mangas/{mangaId}", id)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content("""
+                {
+                  "name": "updated_name",
+                  "status": "FINISHED",
+                  "currentChapter": 2.0,
+                  "finalChapter": 20.0,
+                  "englishChapter": 20.0,
+                  "portugueseChapter": 20.0,
+                  "extraInfo": "extra_info",
+                  "alternativeName": "alt_name"
+                }
+                """))
+        .andExpect(status().isNotFound());
+  }
+
+  @Test
   void shouldDeleteManga() throws Exception {
     var id = UUID.randomUUID();
 
     mockMvc.perform(delete("/mangas/{mangaId}", id))
         .andExpect(status().isNoContent());
+
+    verify(deleteMangaUseCase, times(1)).execute(id);
+  }
+
+  @Test
+  void shouldReturnNotFoundWhenDeletingNonExistentManga() throws Exception {
+    var id = UUID.randomUUID();
+    doThrow(new NoSuchElementException("Manga not found"))
+        .when(deleteMangaUseCase).execute(id);
+
+    mockMvc.perform(delete("/mangas/{mangaId}", id))
+        .andExpect(status().isNotFound());
 
     verify(deleteMangaUseCase, times(1)).execute(id);
   }

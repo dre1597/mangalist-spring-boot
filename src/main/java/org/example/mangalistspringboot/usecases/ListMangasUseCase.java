@@ -27,7 +27,7 @@ public class ListMangasUseCase {
     this.mangaJpaRepository = Objects.requireNonNull(mangaJpaRepository);
   }
 
-  public Pagination<MangaResponse> execute(SearchQuery searchQuery) {
+  public Pagination<MangaResponse> execute(final SearchQuery searchQuery) {
     final var page = PageRequest.of(
         searchQuery.page(),
         searchQuery.perPage(),
@@ -37,7 +37,7 @@ public class ListMangasUseCase {
         .filter(str -> !str.isBlank())
         .map(this::assembleSpecification)
         .orElse(null);
-    
+
     final var pageResult =
         this.mangaJpaRepository.findAll(where(where), page);
 
