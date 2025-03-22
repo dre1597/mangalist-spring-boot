@@ -1,0 +1,25 @@
+{
+  "name": "mangalist-spring-boot",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "cy:open": "cypress open",
+    "cy:run": "cypress run"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dre1597/mangalist-spring-boot.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/dre1597/mangalist-spring-boot/issues"
+  },
+  "homepage": "https://github.com/dre1597/mangalist-spring-boot#readme",
+  "devDependencies": {
+    "cypress": "^14.2.0"
+  }
+}
