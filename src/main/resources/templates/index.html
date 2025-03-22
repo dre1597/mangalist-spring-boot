@@ -11,7 +11,28 @@
   </head>
   <body class="bg-dark text-white">
     <div class="container mt-5">
-      <h1 class="text-center mb-4">Manga List</h1>
+      <header>
+        <h1 class="text-center mb-4">Manga List</h1>
+
+        <form class="mb-4" method="get" th:action="@{/}">
+          <div class="input-group">
+            <label for="terms"></label>
+            <input
+                class="form-control"
+                id="terms"
+                name="terms"
+                placeholder="Search by name or alternative name"
+                th:value="${param.terms}"
+                type="text"
+            >
+
+            <div class="input-group-append">
+              <button class="btn btn-outline-info" type="submit">Search</button>
+            </div>
+          </div>
+        </form>
+      </header>
+
       <main class="table-responsive">
         <table class="table table-dark table-striped table-hover">
           <thead class="thead-light">

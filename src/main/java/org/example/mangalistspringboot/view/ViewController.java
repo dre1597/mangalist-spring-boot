@@ -8,6 +8,7 @@ import org.example.mangalistspringboot.usecases.ListMangasUseCase;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.Objects;
@@ -30,10 +31,11 @@ public class ViewController {
   }
 
   @GetMapping("/")
-  public ModelAndView list() {
+  public ModelAndView list(@RequestParam(value = "terms", defaultValue = "") final String terms) {
     var model = new ModelAndView("index");
-    var query = new SearchQuery(0, 10, "", "name", "asc");
+    var query = new SearchQuery(0, 10, terms, "name", "asc");
     model.addObject("mangas", listMangasUseCase.execute(query).items());
+    model.addObject("terms", terms);
 
     return model;
   }

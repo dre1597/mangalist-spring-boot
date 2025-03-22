@@ -67,6 +67,24 @@ class ViewControllerTest {
   }
 
   @Test
+  void shouldListMangasWithSearchTerms() throws Exception {
+    var searchQuery = new SearchQuery(0, 10, "test", "name", "asc");
+    when(listMangasUseCase.execute(searchQuery)).thenReturn(new Pagination<>(0, 10, 1, List.of()));
+
+    mockMvc.perform(get("/")
+            .param("page", "0")
+            .param("perPage", "10")
+            .param("terms", "test")
+            .param("sort", "name")
+            .param("dir", "asc"))
+        .andExpect(status().isOk())
+        .andExpect(view().name("index"))
+        .andExpect(model().attributeExists("mangas"));
+
+    verify(listMangasUseCase, times(1)).execute(searchQuery);
+  }
+
+  @Test
   void shouldReturnCreateView() throws Exception {
     mockMvc.perform(get("/create/"))
         .andExpect(status().isOk())
